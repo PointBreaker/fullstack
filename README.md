@@ -1,6 +1,15 @@
 # 简单留言板项目
 > Vue.js + Element UI + Django REST Framework (DRF)
 
+> HomePage
+
+[主页](https://github.com/PointBreaker/fullstack/blob/main/asset/homepage.png?raw=true)
+
+> 主界面
+
+
+[App](https://github.com/PointBreaker/fullstack/blob/main/asset/app.png?raw=true)
+
 ## 📋 项目简介
 
 这是一个从零开始构建的全栈留言板应用，采用前后端分离架构。通过这个项目可以学习现代Web开发的完整流程，包括前端Vue.js开发、后端API设计、数据库操作等核心技术。

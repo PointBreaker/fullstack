@@ -65,7 +65,7 @@ python manage.py startapp messages
    ```python
    'rest_framework',
    'corsheaders',
-   'messages',
+   'messages', # fix 使用 messages.apps.MessagesConfig; 同时后面在messages/apps.py中添加label （具体原因可以自己尝试一下不修改会有什么后果，然后使用llm解释一波）
    ```
 
 2. 在`MIDDLEWARE`最顶部添加：
@@ -194,6 +194,8 @@ urlpatterns = [
 ```bash
 python manage.py makemigrations
 python manage.py migrate
+
+# 建议了解下migrate做了什么
 ```
 
 **预期效果：**
@@ -224,7 +226,7 @@ npx @vue/cli create frontend
 **选择配置：**
 - Manually select features
 - 选择：Babel, Router, CSS Pre-processors
-- Vue version: 2.x
+- Vue version: 2.x # 注意选择vue2.x
 - Use history mode: Yes
 - CSS pre-processor: Sass/SCSS
 
@@ -234,6 +236,7 @@ npx @vue/cli create frontend
 cd frontend
 npm install element-ui
 npm install axios
+npm install vue-router@3.5.4 # 最新版的可能不兼容
 ```
 
 **作用说明：**

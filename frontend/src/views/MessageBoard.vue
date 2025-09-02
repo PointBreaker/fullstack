@@ -58,6 +58,14 @@
                 <span class="author">— {{ message.author }}</span>
                 <span class="time">{{ formatTime(message.created_at) }}</span>
               </div>
+              <div class="message-actions">
+                <el-button
+                type="danger"
+                size="mini"
+                @click="deleteMessage(message.id)"
+                :loadinig="deletingIds.includes(message.id)"
+                >删除</el-button>
+              </div>
             </el-card>
           </div>
         </el-card>
@@ -74,6 +82,7 @@ export default {
       messages: [],
       loading: false,
       submitting: false,
+      deletingIds: [], // 记录正在删除的留言ID
       newMessage: {
         author: '',
         content: ''
@@ -131,6 +140,41 @@ export default {
     formatTime(timeString) {
       const date = new Date(timeString)
       return date.toLocaleString('zh-CN')
+    },
+
+    // 删除留言
+    async deleteMessage(messageId) {
+      // 确认删除
+      try {
+        await this.$confirm('确定要删除这条留言吗？', '确认删除', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        })
+      } catch {
+        // 用户取消删除
+        return
+      }
+      
+      // 添加到删除中的ID列表（显示loading状态）
+      this.deletingIds.push(messageId)
+      
+      try {
+        await this.$http.delete(`/messages/${messageId}/`)
+        this.$message.success('留言删除成功！')
+        
+        // 重新加载留言列表
+        this.loadMessages()
+      } catch (error) {
+        console.error('删除留言失败:', error)
+        this.$message.error('删除留言失败，请重试')
+      } finally {
+        // 从删除中的ID列表移除
+        const index = this.deletingIds.indexOf(messageId)
+        if (index > -1) {
+          this.deletingIds.splice(index, 1)
+        }
+      }
     }
   }
 }
@@ -160,9 +204,18 @@ export default {
 .message-meta {
   display: flex;
   justify-content: space-between;
+  align-items: center;
   color: #666;
   font-size: 14px;
 }
+
+.message-info {
+  display: flex;
+  flex-direction: column;
+}
+.message-actions {
+  flex-shrink: 0; /* 防止按钮被压缩 */
+} 
 
 .author {
   font-weight: bold;

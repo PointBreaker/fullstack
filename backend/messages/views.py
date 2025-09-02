@@ -6,8 +6,11 @@ class MessageListCreateView(generics.ListCreateAPIView):
     queryset = Message.objects.all()
     serializer_class = MessageSerializer
     
-class MessageDeleteView(generics.DestroyAPIView):
-    # DestroyAPIView 专门处理DELETE请求
-    # 它会根据URL中的ID自动找到对应的留言并删除
+class MessageDetailView(generics.RetrieveUpdateDestroyAPIView):
+    # RetrieveUpdateDestroyAPIView 支持 GET、PUT、PATCH、DELETE 方法
+    # GET: 获取单个留言详情
+    # PUT/PATCH: 更新留言
+    # DELETE: 删除留言
     queryset = Message.objects.all()
     serializer_class = MessageSerializer
+    

@@ -66,6 +66,14 @@
                 :loadinig="deletingIds.includes(message.id)"
                 >删除</el-button>
               </div>
+              <div class="message-actions">
+                <el-button
+                type="info"
+                size="mini"
+                @click="editMessage(message.id)"
+                :loadinig="editingIds.includes(message.id)"
+                >编辑</el-button>
+              </div>
             </el-card>
           </div>
         </el-card>
@@ -83,7 +91,12 @@ export default {
       loading: false,
       submitting: false,
       deletingIds: [], // 记录正在删除的留言ID
+      editingIds: [], // 记录正在编辑的留言ID
       newMessage: {
+        author: '',
+        content: ''
+      },
+      updatedMessage: {
         author: '',
         content: ''
       }
@@ -160,7 +173,7 @@ export default {
       this.deletingIds.push(messageId)
       
       try {
-        await this.$http.delete(`/messages/${messageId}/`)
+        await this.$http.delete(`/messages/${messageId}/delete/`)
         this.$message.success('留言删除成功！')
         
         // 重新加载留言列表
@@ -173,6 +186,54 @@ export default {
         const index = this.deletingIds.indexOf(messageId)
         if (index > -1) {
           this.deletingIds.splice(index, 1)
+        }
+      }
+    },
+    // 编辑留言
+    async editMessage(messageId) {
+      // 确认编辑
+      const currentMessage = this.messages.find(msg => msg.id == messageId)
+      console.log("current messages" + currentMessage);
+      try {
+        await this.$prompt('请输入留言内容', '编辑留言', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          inputPattern: /.+/, // 验证规则，确保输入不为空
+          inputErrorMessage: '留言内容不能为空',
+          inputValue: currentMessage.content, // 可以设置默认值
+          type: 'info'
+        }).then(({ value }) => {
+          // 用户点击确定后，value 是输入的内容
+          this.updatedMessage.content = value
+          console.log('用户输入的内容:', this.updatedMessage.content);
+        }).catch(() => {
+          // 用户点击取消
+          console.log('用户取消了编辑');
+        });
+      } catch {
+        // 用户取消编辑
+        return
+      }
+      // 添加到删除中的ID列表（显示loading状态）
+      this.editingIds.push(messageId);
+
+      this.updatedMessage.author = currentMessage.author;
+      console.log(this.updatedMessage.author);
+
+      try {
+        await this.$http.put(`/messages/${messageId}/put/`, this.updatedMessage)
+        this.$message.success('留言编辑成功！')
+        
+        // 重新加载留言列表
+        this.loadMessages()
+      } catch (error) {
+        console.error('编辑留言失败:', error)
+        this.$message.error('编辑留言失败，请重试')
+      } finally {
+        // 从编辑中的ID列表移除
+        const index = this.editingIds.indexOf(messageId)
+        if (index > -1) {
+          this.editingIds.splice(index, 1)
         }
       }
     }

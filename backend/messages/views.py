@@ -11,3 +11,7 @@ class MessageDeleteView(generics.DestroyAPIView):
     # 它会根据URL中的ID自动找到对应的留言并删除
     queryset = Message.objects.all()
     serializer_class = MessageSerializer
+    
+class MessageEditView(generics.UpdateAPIView):
+    queryset = Message.objects.all()
+    serializer_class = MessageSerializer

@@ -28,17 +28,24 @@ cd message-board
 ```bash
 mkdir backend
 cd backend
-python -m venv venv
+
+
+# 安装uv
+curl -LsSf https://astral.sh/uv/install.sh  | sh
+
+echo "3.12" > .python-verion # 使用3.12版本python
+
+# 使用uv 创建虚拟环境
+uv venv
+
 source venv/bin/activate  # macOS/Linux
 # 或 venv\Scripts\activate  # Windows
 ```
 
 ### 1.3 安装后端依赖
 ```bash
-pip install django
-pip install djangorestframework
-pip install django-cors-headers
-pip freeze > requirements.txt
+uv init
+uv add django djangorestframework django-cors-headers
 ```
 
 **作用说明：**
@@ -65,8 +72,18 @@ python manage.py startapp messages
    ```python
    'rest_framework',
    'corsheaders',
-   'messages', # fix 使用 messages.apps.MessagesConfig; 同时后面在messages/apps.py中添加label （具体原因可以自己尝试一下不修改会有什么后果，然后使用llm解释一波）
+   'messages.apps.MessagesConfig',  # 注意：不能直接写'messages'
    ```
+
+**⚠️ 重要说明：为什么不能直接写'messages'？**
+
+因为Django内置了一个叫`django.contrib.messages`的应用，如果你直接写`'messages'`，Django会搞混到底是要用内置的还是你自己创建的messages应用。
+
+**解决方案有两种：**
+- 方案1：使用完整路径 `'messages.apps.MessagesConfig'`（推荐）
+- 方案2：修改 `messages/apps.py` 文件，添加 `label = 'my_messages'`
+
+我们用方案1，因为更简单直接。如果你好奇方案2怎么做，可以试试看会发生什么！
 
 2. 在`MIDDLEWARE`最顶部添加：
    ```python
@@ -223,12 +240,19 @@ cd .. # 回到message-board目录
 npx @vue/cli create frontend
 ```
 
-**选择配置：**
-- Manually select features
-- 选择：Babel, Router, CSS Pre-processors
-- Vue version: 2.x # 注意选择vue2.x
-- Use history mode: Yes
-- CSS pre-processor: Sass/SCSS
+**选择配置时要注意：**
+- 选择 "Manually select features"（手动选择功能）
+- 勾选：Babel, Router, CSS Pre-processors
+- **Vue version: 2.x**（⚠️ 重要：一定要选2.x，不要选3.x）
+- Use history mode for router: Yes
+- CSS pre-processor: Sass/SCSS (with dart-sass)
+
+**🤔 为什么要选Vue 2.x而不是3.x？**
+
+因为Element UI目前主要支持Vue 2.x。如果你选了Vue 3.x，后面安装Element UI时会遇到兼容性问题。
+
+**如果你不小心选错了怎么办？**
+删除frontend文件夹，重新创建就行了！这就是为什么我们要在开始就把这些细节说清楚。
 
 ### 3.2 安装前端依赖
 
@@ -236,8 +260,28 @@ npx @vue/cli create frontend
 cd frontend
 npm install element-ui
 npm install axios
-npm install vue-router@3.5.4 # 最新版的可能不兼容
 ```
+
+**⚠️ 关于vue-router的重要说明：**
+
+你可能会想安装vue-router，但是等等！当你用Vue CLI创建项目时选择了Router选项，vue-router已经自动安装了。
+
+**如果你遇到版本兼容问题，可以这样处理：**
+```bash
+# 检查当前版本
+npm list vue-router
+
+# 如果版本是4.x，需要降级到3.x（因为我们用的是Vue 2）
+npm uninstall vue-router
+npm install vue-router@3.5.4
+```
+
+**为什么要用3.5.4版本？**
+- Vue 2.x 配合 Vue Router 3.x
+- Vue 3.x 配合 Vue Router 4.x
+- 版本不匹配会导致各种奇怪的错误
+
+**小实验：** 如果你好奇版本不匹配会怎样，可以故意安装错误版本试试，然后观察控制台的报错信息！
 
 **作用说明：**
 - `element-ui`: 提供美观的UI组件
@@ -278,7 +322,7 @@ new Vue({
 - 全局注册Element UI组件
 - 配置axios的基础URL，简化API调用
 
-## 🔧 第四阶段：创建前端页面
+## � 第四阶段：创建前端页面
 
 ### 4.1 修改App.vue启用路由系统
 
@@ -595,7 +639,7 @@ export default {
 </script>
 ```
 
-## 🚀 第五阶段：测试完整功能
+## � 第五阶段：测试完整功能
 
 ### 5.1 启动服务
 

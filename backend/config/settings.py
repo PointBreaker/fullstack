@@ -134,6 +134,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # CORS设置
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:8080",
+    "http://127.0.0.1:8080",  # 如果通过127.0.0.1访问有可能因为CORS问题无法访问到后端
 ]
 
 # REST Framework配置

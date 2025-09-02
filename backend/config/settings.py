@@ -41,7 +41,7 @@ INSTALLED_APPS = [
     # project related
     'rest_framework',
     'corsheaders',
-    'messages',
+    'messages.apps.MessagesConfig',
 ]
 
 MIDDLEWARE = [

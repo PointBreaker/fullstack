@@ -173,7 +173,7 @@ export default {
       this.deletingIds.push(messageId)
       
       try {
-        await this.$http.delete(`/messages/${messageId}/delete/`)
+        await this.$http.delete(`/messages/${messageId}`)
         this.$message.success('留言删除成功！')
         
         // 重新加载留言列表
@@ -221,7 +221,7 @@ export default {
       console.log(this.updatedMessage.author);
 
       try {
-        await this.$http.put(`/messages/${messageId}/put/`, this.updatedMessage)
+        await this.$http.put(`/messages/${messageId}`, this.updatedMessage)
         this.$message.success('留言编辑成功！')
         
         // 重新加载留言列表

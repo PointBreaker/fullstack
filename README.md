@@ -3,12 +3,12 @@
 
 > HomePage
 
-[主页](https://github.com/PointBreaker/fullstack/blob/main/asset/homepage.png?raw=true)
+![主页](https://github.com/PointBreaker/fullstack/blob/main/asset/homepage.png?raw=true)
 
 > 主界面
 
 
-[App](https://github.com/PointBreaker/fullstack/blob/main/asset/app.png?raw=true)
+![App](https://github.com/PointBreaker/fullstack/blob/main/asset/app.png?raw=true)
 
 ## 📋 项目简介
 

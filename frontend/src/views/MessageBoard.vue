@@ -204,9 +204,18 @@ export default {
 .message-meta {
   display: flex;
   justify-content: space-between;
+  align-items: center;
   color: #666;
   font-size: 14px;
 }
+
+.message-info {
+  display: flex;
+  flex-direction: column;
+}
+.message-actions {
+  flex-shrink: 0; /* 防止按钮被压缩 */
+} 
 
 .author {
   font-weight: bold;

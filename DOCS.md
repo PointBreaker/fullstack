@@ -278,9 +278,57 @@ new Vue({
 - 全局注册Element UI组件
 - 配置axios的基础URL，简化API调用
 
-## 🔧 第四阶段：创建留言板页面
+## 🔧 第四阶段：创建前端页面
 
-### 4.1 创建留言板组件
+### 4.1 修改App.vue启用路由系统
+
+**问题说明：**
+当前的 `App.vue` 文件还是Vue CLI生成的默认模板，它直接显示Vue logo和HelloWorld组件，而没有使用Vue Router来渲染路由组件。
+
+**文件位置：** `frontend/src/App.vue`
+
+**需要完全替换的内容：**
+```vue
+<template>
+  <div id="app">
+    <router-view/>
+  </div>
+</template>
+
+<script>
+export default {
+  name: 'App'
+}
+</script>
+
+<style>
+#app {
+  font-family: Avenir, Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-align: center;
+  color: #2c3e50;
+  margin-top: 60px;
+}
+</style>
+```
+
+**修改说明：**
+1. 移除Vue logo图片和HelloWorld组件的引用
+2. 用 `<router-view/>` 替换硬编码的组件
+3. 移除HelloWorld组件的import和注册
+4. 保留基础的CSS样式
+
+**作用说明：**
+- `<router-view/>` 是Vue Router的核心组件，用于根据当前URL渲染对应的页面组件
+- 这样才能让路由系统正常工作，显示Home页面和MessageBoard页面
+
+**预期效果：**
+- 访问 http://localhost:8080 会显示Home页面（"欢迎来到留言板系统"）
+- 访问 http://localhost:8080/messages 会显示留言板页面
+- 点击"进入留言板"按钮能正常跳转
+
+### 4.2 创建留言板组件
 
 **文件位置：** `frontend/src/views/MessageBoard.vue`（新建文件）
 
@@ -462,7 +510,32 @@ export default {
 </style>
 ```
 
-### 4.2 配置路由
+### 4.3 修改首页添加导航
+
+**文件位置：** `frontend/src/views/Home.vue`
+
+**需要修改的内容：**
+```vue
+<template>
+  <div class="home">
+    <img alt="Vue logo" src="../assets/logo.png">
+    <h1>欢迎来到留言板系统</h1>
+    <div style="margin-top: 30px;">
+      <el-button type="primary" size="large" @click="$router.push('/messages')">
+        进入留言板
+      </el-button>
+    </div>
+  </div>
+</template>
+
+<script>
+export default {
+  name: 'Home'
+}
+</script>
+```
+
+### 4.3 配置路由
 
 **文件位置：** `frontend/src/router/index.js`
 
@@ -497,7 +570,7 @@ const router = new VueRouter({
 export default router
 ```
 
-### 4.3 修改首页添加导航
+### 4.4 修改首页添加导航
 
 **文件位置：** `frontend/src/views/Home.vue`
 
@@ -591,6 +664,18 @@ npm run serve
 3. **数据不显示**
    - 检查浏览器Console是否有JavaScript错误
    - 确认API返回的数据格式
+
+## ⚠️ 重要提醒
+
+**关键步骤说明：**
+修改 `App.vue` 文件是Vue Router项目的必要步骤。任何使用Vue Router的项目都需要在根组件（App.vue）中使用 `<router-view/>` 来渲染路由组件，否则路由配置不会生效。
+
+如果跳过这个步骤，你会看到：
+- 浏览器显示Vue CLI的默认欢迎页面
+- 路由跳转不起作用
+- 自定义的页面组件无法显示
+
+这就是为什么你之前看到Vue欢迎页面而不是实际应用页面的根本原因。
 
 ## 🎯 学习总结
 
